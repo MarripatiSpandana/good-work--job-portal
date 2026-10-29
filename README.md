@@ -114,7 +114,7 @@ Then visit [http://localhost:5500](http://localhost:5500).
 
 ### Employer Dashboard
 
-![Goodwork employer dashboard](screenshots/employer -dashboard.png)
+![Goodwork employer dashboard](screenshots/employer-dashboard.png)
 
 
 
