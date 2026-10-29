@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f4f6fb" />
+  <meta name="description" content="Find thoughtful work or meet the people who will shape what comes next." />
+  <title>Goodwork — Find your next thing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20244a;
+      --muted: #747990;
+      --line: #e8eaf2;
+      --paper: #ffffff;
+      --canvas: #f4f6fb;
+      --violet: #5549e8;
+      --violet-dark: #4036c8;
+      --citron: #d5f276;
+      --mint: #e8f7ef;
+      --lavender: #eeedff;
+      --peach: #fff0e7;
+      --shadow: 0 14px 38px rgba(31, 37, 76, .07);
+      font-family: "DM Sans", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: var(--canvas); color: var(--ink); }
+    button, input, select, textarea { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+      outline: 3px solid rgba(85, 73, 232, .38); outline-offset: 3px;
+    }
+    .app-shell { min-height: 100vh; }
+    .sidebar {
+      position: fixed; inset: 0 auto 0 0; z-index: 5; display: flex; flex-direction: column;
+      width: 248px; padding: 29px 17px 18px; background: #fff; border-right: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px; color: var(--ink); text-decoration: none; }
+    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 12px 12px 12px 4px; background: var(--violet); color: white; font-size: 19px; }
+    .brand-name { font: 700 21px "Space Grotesk", sans-serif; letter-spacing: -.8px; }
+    .workspace-label { margin: 42px 10px 12px; color: #989bad; font: 500 11px "DM Mono", monospace; letter-spacing: .04em; }
+    .side-nav { display: grid; gap: 5px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border: 0;
+      border-radius: 9px; background: transparent; color: #686d83; cursor: pointer; text-align: left;
+      font-size: 13px; font-weight: 600; transition: background .16s ease, color .16s ease;
+    }
+    .nav-item i { width: 18px; font-size: 16px; }
+    .nav-item:hover { background: #f5f5fb; color: var(--ink); }
+    .nav-item.active { background: #efefff; color: var(--violet); }
+    .nav-count { margin-left: auto; padding: 2px 7px; border-radius: 20px; background: #f1f2f7; color: #73788d; font: 11px "DM Mono", monospace; }
+    .sidebar-bottom { margin-top: auto; }
+    .help-card { margin: 14px 2px 17px; padding: 15px 13px; border-radius: 12px; background: #f4f5ff; }
+    .help-card strong { display: block; font-size: 12px; }
+    .help-card p { margin: 5px 0 11px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .help-card button { padding: 0; border: 0; background: none; color: var(--violet); cursor: pointer; font-size: 11px; font-weight: 700; }
+    .user-card { display: flex; align-items: center; gap: 10px; padding: 14px 8px 0; border-top: 1px solid var(--line); }
+    .avatar { display: grid; flex: 0 0 auto; width: 35px; height: 35px; place-items: center; border-radius: 50%; background: #f6d5c6; color: #684437; font: 700 11px "Space Grotesk", sans-serif; }
+    .user-meta { min-width: 0; }
+    .user-meta strong, .user-meta span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-meta strong { font-size: 12px; }
+    .user-meta span { margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .user-more { margin-left: auto; border: 0; background: none; color: #85899d; cursor: pointer; }
+    .main-area { min-height: 100vh; margin-left: 248px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; min-height: 75px; padding: 0 42px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.76); }
+    .crumb { color: #989bad; font-size: 12px; }
+    .crumb strong { color: var(--ink); font-weight: 600; }
+    .topbar-actions { display: flex; align-items: center; gap: 17px; }
+    .role-switch { display: flex; padding: 4px; border: 1px solid var(--line); border-radius: 9px; background: white; }
+    .role-switch button { padding: 7px 11px; border: 0; border-radius: 6px; background: transparent; color: #767b90; cursor: pointer; font-size: 11px; font-weight: 600; }
+    .role-switch button[aria-pressed="true"] { background: var(--ink); color: white; }
+    .icon-button { position: relative; display: grid; width: 35px; height: 35px; place-items: center; border: 1px solid var(--line); border-radius: 9px; background: white; color: #666b80; cursor: pointer; font-size: 15px; }
+    .notification-dot { position: absolute; top: 7px; right: 7px; width: 6px; height: 6px; border: 1px solid white; border-radius: 50%; background: #f47f62; }
+    .mobile-brand { display: none; }
+    .content { max-width: 1360px; margin: 0 auto; padding: 33px 42px 55px; }
+    .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 25px; }
+    .page-heading h1 { margin: 0; font: 600 clamp(25px, 3vw, 32px)/1.18 "Space Grotesk", sans-serif; letter-spacing: -1.2px; }
+    .page-heading p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+    .eyebrow { margin: 0 0 9px; color: #73788d; font: 500 10px "DM Mono", monospace; letter-spacing: .04em; }
+    .button-primary, .button-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 15px;
+      border: 1px solid transparent; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700;
+      transition: background .16s ease, transform .16s ease;
+    }
+    .button-primary { background: var(--violet); color: white; }
+    .button-primary:hover { background: var(--violet-dark); transform: translateY(-1px); }
+    .button-secondary { border-color: var(--line); background: white; color: var(--ink); }
+    .button-secondary:hover { background: #f8f8fc; }
+    .hero {
+      position: relative; display: flex; min-height: 220px; overflow: hidden; align-items: center; justify-content: space-between;
+      margin-bottom: 25px; padding: 30px 38px; border-radius: 15px; background: var(--ink); color: white;
+    }
+    .hero-copy { position: relative; z-index: 1; max-width: 460px; }
+    .hero-kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; color: #d5f276; font-size: 11px; font-weight: 600; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--citron); box-shadow: 0 0 0 4px rgba(213,242,118,.13); }
+    .hero h2 { max-width: 440px; margin: 0; font: 600 clamp(27px, 3.2vw, 39px)/1.1 "Space Grotesk", sans-serif; letter-spacing: -1.5px; }
+    .hero p { max-width: 390px; margin: 12px 0 20px; color: #c7c9db; font-size: 12px; line-height: 1.6; }
+    .hero .button-primary { background: var(--citron); color: var(--ink); }
+    .hero .button-primary:hover { background: #e1ff8b; }
+    .hero-art { position: absolute; top: 0; right: 0; width: 43%; height: 100%; overflow: hidden; }
+    .orbit { position: absolute; width: 225px; height: 225px; top: -8px; right: 85px; border: 1px solid rgba(255,255,255,.16); border-radius: 50%; }
+    .orbit::before, .orbit::after { position: absolute; content: ""; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; }
+    .orbit::before { inset: 22px; }
+    .orbit::after { inset: 47px; }
+    .orbit-core { position: absolute; top: 78px; right: 163px; display: grid; width: 70px; height: 70px; place-items: center; border-radius: 50%; background: var(--citron); color: var(--ink); font-size: 26px; transform: rotate(-12deg); }
+    .orbit-chip { position: absolute; display: flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid rgba(255,255,255,.16); border-radius: 9px; background: #30345b; color: #f4f4fc; font-size: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.15); }
+    .orbit-chip i { color: var(--citron); font-size: 13px; }
+    .chip-one { top: 35px; right: 30px; }
+    .chip-two { right: 47px; bottom: 33px; }
+    .chip-three { right: 208px; bottom: 15px; }
+    .content-grid { display: grid; grid-template-columns: minmax(0, 1fr) 275px; gap: 23px; align-items: start; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .section-head h2 { margin: 0; font: 600 17px "Space Grotesk", sans-serif; letter-spacing: -.4px; }
+    .text-button { padding: 4px 0; border: 0; background: transparent; color: var(--violet); cursor: pointer; font-size: 11px; font-weight: 700; }
+    .search-row { display: flex; gap: 9px; margin-bottom: 16px; }
+    .search-box { display: flex; flex: 1; align-items: center; gap: 9px; min-width: 0; height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: white; color: #898da0; }
+    .search-box input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 12px; }
+    .search-box input::placeholder { color: #a2a5b4; }
+    .filter-button { display: inline-flex; align-items: center; gap: 7px; padding: 0 13px; border: 1px solid var(--line); border-radius: 8px; background: white; color: #555a70; cursor: pointer; font-size: 11px; font-weight: 600; }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+    .filter-chip { padding: 6px 11px; border: 1px solid var(--line); border-radius: 30px; background: white; color: #72778b; cursor: pointer; font-size: 10px; }
+    .filter-chip.selected { border-color: #d9d6ff; background: #efefff; color: var(--violet); font-weight: 700; }
+    .job-list { display: grid; gap: 10px; }
+    .job-card { padding: 16px 17px 14px; border: 1px solid var(--line); border-radius: 11px; background: white; transition: border-color .16s ease, transform .16s ease; }
+    .job-card:hover { transform: translateY(-2px); border-color: #d2d0f7; }
+    .job-top { display: flex; align-items: flex-start; gap: 12px; }
+    .company-mark { display: grid; flex: 0 0 auto; width: 39px; height: 39px; place-items: center; border-radius: 11px; background: var(--mark-bg, var(--lavender)); color: var(--mark-color, var(--violet)); font: 700 14px "Space Grotesk", sans-serif; }
+    .job-title-wrap { min-width: 0; flex: 1; }
+    .job-title { margin: 1px 0 4px; font: 600 14px "Space Grotesk", sans-serif; letter-spacing: -.15px; }
+    .job-company { color: #777c90; font-size: 11px; }
+    .save-button { display: grid; width: 30px; height: 30px; place-items: center; flex: 0 0 auto; border: 0; border-radius: 7px; background: transparent; color: #969aab; cursor: pointer; font-size: 15px; }
+    .save-button:hover, .save-button.saved { background: #fff4e7; color: #e99c51; }
+    .job-meta { display: flex; flex-wrap: wrap; gap: 7px 15px; margin: 13px 0 13px 51px; color: #777c90; font-size: 10px; }
+    .job-meta span { display: flex; align-items: center; gap: 5px; }
+    .job-meta i { color: #a0a3b1; font-size: 12px; }
+    .job-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 11px; border-top: 1px solid #f0f1f5; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { padding: 5px 8px; border-radius: 5px; background: #f4f5f9; color: #6d7287; font-size: 9px; }
+    .tag.remote { background: var(--mint); color: #367552; }
+    .job-actions { display: flex; flex: 0 0 auto; gap: 7px; }
+    .small-button { padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; background: white; color: #565b70; cursor: pointer; font-size: 10px; font-weight: 700; }
+    .small-button.apply { border-color: var(--violet); background: var(--violet); color: white; }
+    .small-button.apply:hover { background: var(--violet-dark); }
+    .small-button.applied { border-color: #ccebd8; background: var(--mint); color: #377752; cursor: default; }
+    .side-column { display: grid; gap: 13px; }
+    .panel { padding: 17px; border: 1px solid var(--line); border-radius: 11px; background: white; }
+    .panel-title { margin: 0; font: 600 14px "Space Grotesk", sans-serif; letter-spacing: -.2px; }
+    .panel-subtitle { margin: 5px 0 15px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .profile-row { display: flex; align-items: center; gap: 11px; }
+    .profile-ring { position: relative; display: grid; width: 48px; height: 48px; flex: 0 0 auto; place-items: center; border: 4px solid #ebeaff; border-right-color: var(--violet); border-top-color: var(--violet); border-radius: 50%; color: var(--ink); font: 700 11px "DM Mono", monospace; transform: rotate(25deg); }
+    .profile-ring span { transform: rotate(-25deg); }
+    .profile-copy strong { display: block; font-size: 11px; }
+    .profile-copy span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .progress-track { height: 5px; margin-top: 15px; overflow: hidden; border-radius: 6px; background: #eeeef5; }
+    .progress-fill { width: 72%; height: 100%; border-radius: inherit; background: var(--violet); }
+    .profile-link { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 13px; padding: 10px 0 0; border: 0; border-top: 1px solid #f0f1f5; background: transparent; color: var(--violet); cursor: pointer; text-align: left; font-size: 10px; font-weight: 700; }
+    .tip-panel { position: relative; overflow: hidden; background: #f1f0ff; }
+    .tip-icon { display: grid; width: 31px; height: 31px; margin-bottom: 12px; place-items: center; border-radius: 9px; background: white; color: var(--violet); font-size: 15px; }
+    .tip-panel .panel-subtitle { margin-bottom: 11px; color: #666b82; }
+    .tip-panel .text-button { color: var(--violet); }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 23px; }
+    .stat-card { display: flex; align-items: center; gap: 12px; padding: 15px 17px; border: 1px solid var(--line); border-radius: 10px; background: white; }
+    .stat-icon { display: grid; width: 36px; height: 36px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: var(--stat-bg, var(--lavender)); color: var(--stat-color, var(--violet)); font-size: 15px; }
+    .stat-value { font: 600 20px "Space Grotesk", sans-serif; letter-spacing: -.5px; }
+    .stat-label { margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .employer-hero { background: #334153; }
+    .employer-hero .hero-art { opacity: .82; }
+    .hiring-art { position: absolute; top: 0; right: 2%; width: 340px; height: 100%; }
+    .hiring-circle { position: absolute; top: 20px; right: 35px; width: 175px; height: 175px; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; }
+    .hiring-circle::before, .hiring-circle::after { position: absolute; content: ""; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; }
+    .hiring-circle::before { inset: 19px; }
+    .hiring-circle::after { inset: 43px; background: rgba(213,242,118,.95); }
+    .hiring-face { position: absolute; top: 65px; right: 111px; z-index: 1; display: grid; width: 24px; height: 24px; place-items: center; color: #334153; font-size: 12px; }
+    .floating-person { position: absolute; display: flex; align-items: center; gap: 7px; padding: 7px 9px; border: 1px solid rgba(255,255,255,.18); border-radius: 8px; background: #435168; color: white; font-size: 9px; }
+    .floating-person b { display: grid; width: 23px; height: 23px; place-items: center; border-radius: 50%; background: #f5c4b3; color: #513a37; font-size: 9px; }
+    .person-one { top: 33px; right: 219px; }
+    .person-two { right: 8px; bottom: 27px; }
+    .person-three { right: 178px; bottom: 13px; }
+    .pipeline-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0 0 25px; }
+    .pipeline-card { position: relative; padding: 16px 17px; border: 1px solid var(--line); border-radius: 10px; background: white; }
+    .pipeline-card::after { position: absolute; top: 17px; right: 16px; width: 7px; height: 7px; border-radius: 50%; background: var(--dot, var(--violet)); content: ""; }
+    .pipeline-value { font: 600 24px "Space Grotesk", sans-serif; letter-spacing: -.8px; }
+    .pipeline-label { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .pipeline-note { margin-top: 12px; color: #668c6f; font-size: 9px; }
+    .employer-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, .8fr); gap: 18px; align-items: start; }
+    .roles-panel { padding: 19px; border: 1px solid var(--line); border-radius: 11px; background: white; }
+    .role-list { display: grid; margin-top: 13px; }
+    .role-row { display: grid; grid-template-columns: minmax(140px, 1fr) 88px 85px auto; align-items: center; gap: 12px; padding: 14px 0; border-top: 1px solid #f0f1f5; }
+    .role-row:first-child { border-top: 0; }
+    .role-name { font-size: 11px; font-weight: 700; }
+    .role-type { margin-top: 4px; color: var(--muted); font-size: 9px; }
+    .role-status { width: fit-content; padding: 5px 8px; border-radius: 5px; background: var(--mint); color: #397552; font-size: 9px; }
+    .role-applicants { color: #656a7f; font-size: 10px; }
+    .role-applicants strong { color: var(--ink); font-size: 12px; }
+    .role-open { padding: 6px 9px; border: 1px solid var(--line); border-radius: 6px; background: white; color: #555a70; cursor: pointer; font-size: 9px; font-weight: 700; }
+    .applicant-list { display: grid; gap: 13px; margin-top: 15px; }
+    .applicant { display: flex; align-items: center; gap: 9px; }
+    .applicant .avatar { width: 32px; height: 32px; font-size: 9px; }
+    .applicant-info { min-width: 0; flex: 1; }
+    .applicant-info strong { display: block; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+    .applicant-info span { display: block; overflow: hidden; margin-top: 3px; color: var(--muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .new-label { padding: 4px 6px; border-radius: 5px; background: #fff3df; color: #a46f28; font-size: 8px; }
+    .activity-empty { padding: 19px 12px; border-radius: 8px; background: #f7f7fb; color: var(--muted); font-size: 10px; line-height: 1.6; text-align: center; }
+    .application-note { margin-top: 10px; color: #397552; font-size: 10px; }
+    .application-note i { margin-right: 5px; }
+    .empty-state { padding: 37px 20px; border: 1px dashed #d9dbe7; border-radius: 11px; background: rgba(255,255,255,.65); text-align: center; }
+    .empty-state i { color: #aaa5f2; font-size: 24px; }
+    .empty-state h3 { margin: 9px 0 5px; font: 600 15px "Space Grotesk", sans-serif; }
+    .empty-state p { margin: 0 auto 13px; color: var(--muted); font-size: 11px; }
+    .toast { position: fixed; z-index: 30; right: 24px; bottom: 24px; display: flex; align-items: center; gap: 9px; padding: 12px 16px; border-radius: 9px; background: var(--ink); color: white; box-shadow: var(--shadow); font-size: 12px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .18s ease, transform .18s ease; }
+    .toast.visible { opacity: 1; transform: translateY(0); }
+    .toast i { color: var(--citron); }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; overflow-y: auto; padding: 20px; background: rgba(23,26,52,.5); }
+    .modal-backdrop[hidden] { display: none; }
+    .modal { width: min(100%, 520px); max-height: calc(100vh - 40px); overflow-y: auto; padding: 24px; border-radius: 14px; background: white; box-shadow: 0 25px 80px rgba(20,25,55,.2); }
+    .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .modal-header h2 { margin: 0; font: 600 21px "Space Grotesk", sans-serif; letter-spacing: -.6px; }
+    .modal-close { display: grid; width: 31px; height: 31px; place-items: center; border: 0; border-radius: 7px; background: #f3f4f8; color: #6e7386; cursor: pointer; }
+    .modal-description { color: #6f7488; font-size: 12px; line-height: 1.7; }
+    .job-detail-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .detail-block { margin: 18px 0; }
+    .detail-block h3 { margin: 0 0 7px; font: 600 13px "Space Grotesk", sans-serif; }
+    .detail-block p { margin: 0; color: #6f7488; font-size: 11px; line-height: 1.7; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; margin-top: 19px; }
+    .field { display: grid; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { color: #565b70; font-size: 10px; font-weight: 700; }
+    .field input, .field select, .field textarea { width: 100%; min-height: 39px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 7px; background: white; color: var(--ink); font-size: 11px; }
+    .field textarea { min-height: 90px; resize: vertical; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+    @media (max-width: 1100px) {
+      .content { padding-right: 27px; padding-left: 27px; }
+      .topbar { padding-right: 27px; padding-left: 27px; }
+      .content-grid { grid-template-columns: minmax(0, 1fr) 240px; gap: 16px; }
+      .employer-grid { grid-template-columns: 1.2fr .8fr; }
+      .chip-three { right: 150px; }
+    }
+    @media (max-width: 850px) {
+      .sidebar { width: 210px; }
+      .main-area { margin-left: 210px; }
+      .content-grid { grid-template-columns: 1fr; }
+      .side-column { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .employer-grid { grid-template-columns: 1fr; }
+      .hero-art { right: -60px; opacity: .7; }
+      .pipeline-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 620px) {
+      .sidebar { position: sticky; top: 0; inset: auto; width: 100%; height: auto; padding: 11px 14px 8px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .brand { padding: 0 2px; }
+      .brand-mark { width: 30px; height: 30px; font-size: 16px; }
+      .brand-name { font-size: 19px; }
+      .workspace-label, .sidebar-bottom { display: none; }
+      .side-nav { display: flex; gap: 3px; margin-top: 9px; overflow-x: auto; }
+      .nav-item { width: auto; flex: 0 0 auto; gap: 7px; padding: 8px 10px; font-size: 10px; }
+      .nav-item i { font-size: 14px; }
+      .nav-count { margin-left: 0; }
+      .main-area { margin-left: 0; }
+      .topbar { min-height: 58px; padding: 0 16px; }
+      .crumb { display: none; }
+      .topbar-actions { width: 100%; justify-content: space-between; gap: 9px; }
+      .role-switch button { padding: 7px 9px; font-size: 10px; }
+      .content { padding: 24px 15px 40px; }
+      .page-heading { align-items: flex-start; }
+      .page-heading h1 { font-size: 26px; }
+      .page-heading p { max-width: 250px; font-size: 11px; }
+      .page-heading > .button-primary { min-height: 36px; padding: 0 10px; font-size: 10px; }
+      .hero { min-height: 220px; padding: 25px 22px; }
+      .hero-copy { max-width: 75%; }
+      .hero h2 { font-size: 29px; }
+      .hero-art { right: -146px; opacity: .4; }
+      .orbit-chip { display: none; }
+      .orbit-core { right: 160px; }
+      .search-row { gap: 6px; }
+      .filter-button { padding: 0 10px; font-size: 0; }
+      .filter-button i { font-size: 14px; }
+      .side-column { grid-template-columns: 1fr; }
+      .stats-row { gap: 7px; }
+      .stat-card { align-items: flex-start; flex-direction: column; gap: 7px; padding: 11px; }
+      .stat-icon { width: 30px; height: 30px; }
+      .stat-value { font-size: 18px; }
+      .job-meta { margin-left: 0; }
+      .job-bottom { align-items: flex-start; flex-direction: column; }
+      .job-actions { align-self: flex-end; }
+      .pipeline-grid { gap: 8px; }
+      .pipeline-card { padding: 13px; }
+      .role-row { grid-template-columns: minmax(110px, 1fr) 70px auto; gap: 7px; }
+      .role-row .role-status { display: none; }
+      .roles-panel { padding: 15px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="Goodwork home">
+        <span class="brand-mark"><i class="bi bi-stars" aria-hidden="true"></i></span>
+        <span class="brand-name">goodwork</span>
+      </a>
+      <p class="workspace-label">YOUR WORKSPACE</p>
+      <nav class="side-nav" id="side-nav" aria-label="Workspace"></nav>
+      <div class="sidebar-bottom">
+        <div class="help-card">
+          <strong>Need a hand?</strong>
+          <p>Good work starts with a little clarity. We’re here if you need us.</p>
+          <button type="button" id="help-button">Visit the help desk <i class="bi bi-arrow-up-right" aria-hidden="true"></i></button>
+        </div>
+        <div class="user-card">
+          <div class="avatar" id="sidebar-avatar">AM</div>
+          <div class="user-meta"><strong id="sidebar-name">Alex Morgan</strong><span id="sidebar-role">Product designer</span></div>
+          <button class="user-more" type="button" aria-label="Profile options"><i class="bi bi-three-dots" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="crumb">Workspace <span aria-hidden="true">/</span> <strong id="breadcrumb">Overview</strong></div>
+        <div class="topbar-actions">
+          <div class="role-switch" aria-label="Choose dashboard">
+            <button type="button" data-role="candidate" aria-pressed="true">For me</button>
+            <button type="button" data-role="employer" aria-pressed="false">For my team</button>
+          </div>
+          <button class="icon-button" id="notification-button" type="button" aria-label="Notifications"><i class="bi bi-bell" aria-hidden="true"></i><span class="notification-dot"></span></button>
+        </div>
+      </header>
+      <div class="content" id="content" aria-live="polite"></div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"><i class="bi bi-check-circle-fill" aria-hidden="true"></i><span id="toast-message"></span></div>
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"></section>
+  </div>
+
+  <script>
+    const jobs = [
+      { id: 1, company: "Northstar", mark: "N", color: "#4c53a7", bg: "#ececff", title: "Senior Product Designer", category: "Design", location: "Brooklyn, NY", arrangement: "Hybrid", salary: "$145k – $175k", posted: "2 days ago", description: "Northstar is building calmer, more useful tools for people who make things. You’ll work alongside a close-knit product team to turn complicated workflows into experiences that feel remarkably simple.", skills: ["Product design", "Figma", "Systems thinking"] },
+      { id: 2, company: "Morrow Health", mark: "M", color: "#36785d", bg: "#e7f4ec", title: "Product Designer, Care", category: "Design", location: "Remote, US", arrangement: "Remote", salary: "$120k – $150k", posted: "1 day ago", description: "Help make everyday healthcare feel more human. You’ll partner with clinicians and engineers to design thoughtful patient experiences from the first visit through follow-up.", skills: ["UX research", "Prototyping", "Healthcare"] },
+      { id: 3, company: "Goodkind", mark: "G", color: "#a55e36", bg: "#fff0e5", title: "Brand & Content Lead", category: "Marketing", location: "Austin, TX", arrangement: "Hybrid", salary: "$105k – $130k", posted: "3 days ago", description: "Shape how a growing climate company shows up in the world. Build a useful, unmistakable brand voice and lead a small, thoughtful content team.", skills: ["Brand strategy", "Writing", "Climate"] },
+      { id: 4, company: "Common Room", mark: "C", color: "#5d4bb3", bg: "#f0ebff", title: "Frontend Engineer", category: "Engineering", location: "Remote, US", arrangement: "Remote", salary: "$155k – $190k", posted: "4 days ago", description: "Build the details that make a community platform feel effortless. Work in a small product team where good engineering means listening as carefully as you code.", skills: ["TypeScript", "React", "Accessibility"] },
+      { id: 5, company: "Fieldnote", mark: "F", color: "#56723d", bg: "#eff4e7", title: "People Operations Partner", category: "People", location: "Chicago, IL", arrangement: "Hybrid", salary: "$95k – $118k", posted: "5 days ago", description: "Help a growing team do its best work. You’ll improve the everyday rituals, tools, and support that help good people thrive at Fieldnote.", skills: ["People ops", "Culture", "Operations"] }
+    ];
+    const employerRoles = [
+      { title: "Product Designer", type: "Design · Full time", applicants: 24, status: "Accepting applicants" },
+      { title: "Frontend Engineer", type: "Engineering · Full time", applicants: 18, status: "Accepting applicants" },
+      { title: "Customer Success Lead", type: "Customer · Full time", applicants: 9, status: "Accepting applicants" }
+    ];
+    const applicants = [
+      { initials: "JL", name: "Jamie Lee", role: "Product Designer", color: "#d9e8f4" },
+      { initials: "SK", name: "Samira Khan", role: "Frontend Engineer", color: "#f4d7e4" },
+      { initials: "RB", name: "Riley Brooks", role: "Product Designer", color: "#eee2c7" }
+    ];
+    function loadSavedState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("goodwork-state") || "{}");
+        return saved && typeof saved === "object" ? saved : {};
+      } catch (error) {
+        console.error("Could not load Goodwork data from this browser.", error);
+        return {};
+      }
+    }
+    const storedState = loadSavedState();
+    const state = {
+      role: "candidate",
+      view: "Overview",
+      filter: "All roles",
+      query: "",
+      candidateQuery: "",
+      candidateRoleFilter: "All roles",
+      saved: new Set(Array.isArray(storedState.saved) ? storedState.saved : [2]),
+      applied: new Set(Array.isArray(storedState.applied) ? storedState.applied : []),
+      applications: storedState.applications && typeof storedState.applications === "object" ? storedState.applications : {},
+      customJobs: Array.isArray(storedState.customJobs) ? storedState.customJobs : [],
+      profile: storedState.profile && typeof storedState.profile === "object" ? storedState.profile : { name: "Alex Morgan", title: "Product designer" },
+      candidateStages: storedState.candidateStages && typeof storedState.candidateStages === "object" ? storedState.candidateStages : {},
+      roleStatuses: storedState.roleStatuses && typeof storedState.roleStatuses === "object" ? storedState.roleStatuses : {}
+    };
+    state.customJobs.forEach((job) => {
+      if (!employerRoles.some((role) => role.title === job.title)) {
+        employerRoles.unshift({ title: job.title, type: `${job.category} · Full time`, applicants: 0, status: "Accepting applicants" });
+      }
+    });
+    const icons = { Overview: "bi-grid-1x2", "Find jobs": "bi-search", Saved: "bi-bookmark", Applications: "bi-send", "Open roles": "bi-briefcase", Candidates: "bi-people" };
+    const navForRole = () => state.role === "candidate" ? ["Overview", "Find jobs", "Saved", "Applications"] : ["Overview", "Open roles", "Candidates"];
+    const allJobs = () => [...state.customJobs, ...jobs];
+    const candidateDirectory = () => [...applicants, { initials: "AT", name: "Avery Thomas", role: "Customer Success Lead", color: "#d8e9dc" }, { initials: "MP", name: "Morgan Patel", role: "People Operations Partner", color: "#ded9f2" }];
+    const candidateMatches = (person) => {
+      const matchesRole = state.candidateRoleFilter === "All roles" || person.role === state.candidateRoleFilter;
+      const matchesQuery = !state.candidateQuery || `${person.name} ${person.role}`.toLowerCase().includes(state.candidateQuery.toLowerCase());
+      return matchesRole && matchesQuery;
+    };
+    const candidateRow = (person, full = false, isNew = false) => `<div class="applicant" ${full ? 'style="padding:9px 0;border-bottom:1px solid #f0f1f5"' : ""}><div class="avatar" style="background:${person.color}">${person.initials}</div><div class="applicant-info"><strong>${escapeHtml(person.name)}</strong><span>${escapeHtml(person.role)}${full ? ` · ${escapeHtml(state.candidateStages[person.name] || "New")}` : ""}</span></div>${isNew ? `<span class="new-label">New</span>` : ""}${full ? `<button type="button" class="role-open" data-candidate="${escapeHtml(person.name)}">Review</button>` : ""}</div>`;
+
+    function persistState() {
+      try {
+        localStorage.setItem("goodwork-state", JSON.stringify({
+          saved: [...state.saved],
+          applied: [...state.applied],
+          applications: state.applications,
+          customJobs: state.customJobs,
+          profile: state.profile,
+          candidateStages: state.candidateStages,
+          roleStatuses: state.roleStatuses
+        }));
+      } catch (error) {
+        console.error("Could not save Goodwork data in this browser.", error);
+        toast("Your changes couldn’t be saved in this browser.");
+      }
+    }
+
+    function renderNav() {
+      const nav = document.getElementById("side-nav");
+      nav.innerHTML = navForRole().map((item) => {
+        let count = "";
+        if (item === "Saved" && state.saved.size) count = `<span class="nav-count">${state.saved.size}</span>`;
+        if (item === "Applications" && state.applied.size) count = `<span class="nav-count">${state.applied.size}</span>`;
+        return `<button type="button" class="nav-item ${state.view === item ? "active" : ""}" data-view="${item}" ${state.view === item ? 'aria-current="page"' : ""}><i class="bi ${icons[item]}" aria-hidden="true"></i>${item}${count}</button>`;
+      }).join("");
+    }
+
+    function jobCard(job) {
+      const saved = state.saved.has(job.id);
+      const applied = state.applied.has(job.id);
+      return `<article class="job-card">
+        <div class="job-top">
+          <div class="company-mark" style="--mark-bg:${job.bg};--mark-color:${job.color}" aria-hidden="true">${escapeHtml(job.mark)}</div>
+          <div class="job-title-wrap"><h3 class="job-title">${escapeHtml(job.title)}</h3><div class="job-company">${escapeHtml(job.company)} <span aria-hidden="true">·</span> ${escapeHtml(job.posted)}</div></div>
+          <button class="save-button ${saved ? "saved" : ""}" type="button" data-save="${job.id}" aria-label="${saved ? "Remove saved job" : "Save job"}" aria-pressed="${saved}"><i class="bi ${saved ? "bi-bookmark-fill" : "bi-bookmark"}" aria-hidden="true"></i></button>
+        </div>
+        <div class="job-meta"><span><i class="bi bi-geo-alt" aria-hidden="true"></i>${escapeHtml(job.location)}</span><span><i class="bi bi-clock" aria-hidden="true"></i>${escapeHtml(job.arrangement)}</span><span><i class="bi bi-cash" aria-hidden="true"></i>${escapeHtml(job.salary)}</span></div>
+        <div class="job-bottom"><div class="tag-row"><span class="tag remote">${escapeHtml(job.arrangement)}</span>${job.skills.slice(0, 2).map((skill) => `<span class="tag">${escapeHtml(skill)}</span>`).join("")}</div>
+          <div class="job-actions"><button class="small-button" type="button" data-detail="${job.id}">Details</button><button class="small-button ${applied ? "applied" : "apply"}" type="button" data-apply="${job.id}" ${applied ? "disabled" : ""}>${applied ? "Applied" : "Apply"}</button></div>
+        </div>
+        ${applied && state.view === "Applications" ? `<div class="application-note"><i class="bi bi-check-circle" aria-hidden="true"></i>Application sent · ${escapeHtml(state.applications[job.id]?.status || "Under review")}</div>` : ""}
+      </article>`;
+    }
+
+    function candidateJobs(mode) {
+      let list = allJobs();
+      if (mode === "Saved") list = list.filter((job) => state.saved.has(job.id));
+      if (mode === "Applications") list = list.filter((job) => state.applied.has(job.id));
+      if (state.filter === "Remote" && mode !== "Saved" && mode !== "Applications") list = list.filter((job) => job.arrangement === "Remote");
+      else if (state.filter !== "All roles" && mode !== "Saved" && mode !== "Applications") list = list.filter((job) => job.category === state.filter);
+      if (state.query.trim()) {
+        const query = state.query.trim().toLowerCase();
+        list = list.filter((job) => [job.title, job.company, job.location, job.category, ...job.skills].join(" ").toLowerCase().includes(query));
+      }
+      return list;
+    }
+
+    function renderCandidate() {
+      const view = state.view;
+      const isOverview = view === "Overview";
+      const firstName = state.profile.name.split(/\s+/)[0] || "there";
+      const title = view === "Saved" ? "Your saved roles" : view === "Applications" ? "Your applications" : view === "Find jobs" ? "Find a good fit" : `Good morning, ${firstName}`;
+      const subtitle = view === "Saved" ? "The roles you bookmarked, all in one place." : view === "Applications" ? "Keep an eye on where each opportunity is headed." : view === "Find jobs" ? "A few thoughtful opportunities to get you started." : "A few good places to take your next step.";
+      const stats = `<div class="stats-row">
+        <div class="stat-card"><span class="stat-icon"><i class="bi bi-send" aria-hidden="true"></i></span><div><div class="stat-value">${state.applied.size}</div><div class="stat-label">Applications sent</div></div></div>
+        <div class="stat-card"><span class="stat-icon" style="--stat-bg:#fff1e7;--stat-color:#d18349"><i class="bi bi-bookmark" aria-hidden="true"></i></span><div><div class="stat-value">${state.saved.size}</div><div class="stat-label">Roles saved</div></div></div>
+        <div class="stat-card"><span class="stat-icon" style="--stat-bg:#e9f6ef;--stat-color:#40815d"><i class="bi bi-eye" aria-hidden="true"></i></span><div><div class="stat-value">12</div><div class="stat-label">Profile views</div></div></div>
+      </div>`;
+      const hero = `<section class="hero" aria-label="Career inspiration">
+        <div class="hero-copy"><p class="hero-kicker"><span class="live-dot"></span> A little momentum goes a long way</p><h2>Your next thing should feel like you.</h2><p>Find teams that value how you think, not just what’s on your résumé.</p><button type="button" class="button-primary" data-view="Find jobs">Explore open roles <i class="bi bi-arrow-up-right" aria-hidden="true"></i></button></div>
+        <div class="hero-art" aria-hidden="true"><div class="orbit"></div><div class="orbit-core"><i class="bi bi-sparkle"></i></div><div class="orbit-chip chip-one"><i class="bi bi-heart"></i> Work that matters</div><div class="orbit-chip chip-two"><i class="bi bi-house-heart"></i> Remote-friendly</div><div class="orbit-chip chip-three"><i class="bi bi-people"></i> Good people</div></div>
+      </section>`;
+      const filters = `<div class="filter-chips" aria-label="Filter by specialty">${["All roles", "Design", "Engineering", "Marketing", "People", "Remote"].map((filter) => `<button type="button" class="filter-chip ${state.filter === filter ? "selected" : ""}" data-filter="${filter}" aria-pressed="${state.filter === filter}">${filter}</button>`).join("")}</div>`;
+      const list = candidateJobs(view);
+      const sectionTitle = view === "Saved" ? "Saved for later" : view === "Applications" ? "Application history" : "Roles picked for you";
+      const jobContent = list.length ? `<div class="job-list">${list.map(jobCard).join("")}</div>` : `<div class="empty-state"><i class="bi ${view === "Saved" ? "bi-bookmark" : view === "Applications" ? "bi-send" : "bi-search"}" aria-hidden="true"></i><h3>${view === "Saved" ? "Nothing saved just yet" : view === "Applications" ? "No applications yet" : "No roles found"}</h3><p>${view === "Saved" ? "Save a role that feels right and it’ll be waiting here." : view === "Applications" ? "When you apply to a role, you can track it here." : "Try a different search or explore another specialty."}</p><button class="button-secondary" type="button" data-view="Find jobs">Browse roles</button></div>`;
+      const sidebar = `<aside class="side-column">
+        <section class="panel"><h2 class="panel-title">Your profile</h2><p class="panel-subtitle">A little more detail can help the right team find you.</p><div class="profile-row"><div class="profile-ring"><span>72%</span></div><div class="profile-copy"><strong>Nearly there</strong><span>Two small updates to go</span></div></div><div class="progress-track" role="progressbar" aria-label="Profile completeness" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill"></div></div><button type="button" class="profile-link" id="profile-button">Finish your profile <i class="bi bi-arrow-right" aria-hidden="true"></i></button></section>
+        <section class="panel tip-panel"><span class="tip-icon"><i class="bi bi-lightbulb" aria-hidden="true"></i></span><h2 class="panel-title">A small tip</h2><p class="panel-subtitle">Tailor the first few lines of your application to the team. Specific beats lengthy, every time.</p><button class="text-button" type="button" id="tip-button">More application tips <i class="bi bi-arrow-up-right" aria-hidden="true"></i></button></section>
+      </aside>`;
+      return `${isOverview ? `<div class="page-heading"><div><p class="eyebrow">MONDAY, OCTOBER 26</p><h1>${title}</h1><p>${subtitle}</p></div></div>${hero}${stats}` : `<div class="page-heading"><div><p class="eyebrow">YOUR CAREER, YOUR PACE</p><h1>${title}</h1><p>${subtitle}</p></div>${view === "Applications" ? "" : `<button type="button" class="button-secondary" data-view="Find jobs"><i class="bi bi-search" aria-hidden="true"></i> Browse roles</button>`}</div>`}
+        <div class="content-grid"><section><div class="section-head"><h2>${sectionTitle}</h2>${view === "Overview" ? `<button class="text-button" type="button" data-view="Find jobs">See all roles <i class="bi bi-arrow-right" aria-hidden="true"></i></button>` : ""}</div>
+          ${view !== "Saved" && view !== "Applications" ? `<div class="search-row"><label class="search-box"><i class="bi bi-search" aria-hidden="true"></i><input id="job-search" type="search" placeholder="Role, company, or keyword" value="${escapeHtml(state.query)}" aria-label="Search roles" /></label><button type="button" class="filter-button" id="search-filter"><i class="bi bi-sliders2" aria-hidden="true"></i> Filters</button></div>${filters}` : ""}
+          <div id="job-results">${jobContent}</div></section>${sidebar}</div>`;
+    }
+
+    function renderEmployer() {
+      const title = state.view === "Open roles" ? "Your open roles" : state.view === "Candidates" ? "Meet your candidates" : "Good people are closer than you think.";
+      const subtitle = state.view === "Open roles" ? "The roles you’re hiring for, in one place." : state.view === "Candidates" ? "Thoughtful people who could do great things with your team." : "Build a team that makes the work better for everyone.";
+      const heading = state.view === "Overview" ? `<div class="page-heading"><div><p class="eyebrow">MONDAY, OCTOBER 26 · YOUR TEAM</p><h1>Make room for good people.</h1><p>${subtitle}</p></div><button type="button" class="button-primary" id="post-job"><i class="bi bi-plus-lg" aria-hidden="true"></i> Post a role</button></div>` : `<div class="page-heading"><div><p class="eyebrow">YOUR HIRING WORKSPACE</p><h1>${title}</h1><p>${subtitle}</p></div><button type="button" class="button-primary" id="post-job"><i class="bi bi-plus-lg" aria-hidden="true"></i> Post a role</button></div>`;
+      const hero = state.view === "Overview" ? `<section class="hero employer-hero"><div class="hero-copy"><p class="hero-kicker"><span class="live-dot"></span> Your team is growing</p><h2>Find the people who make good work happen.</h2><p>Share a role with people who care about doing work that matters.</p><button type="button" class="button-primary" id="hero-post">Post your first role <i class="bi bi-arrow-up-right" aria-hidden="true"></i></button></div><div class="hiring-art" aria-hidden="true"><div class="hiring-circle"></div><div class="hiring-face"><i class="bi bi-stars"></i></div><div class="floating-person person-one"><b>JL</b>Jamie Lee</div><div class="floating-person person-two"><b>SK</b>Samira Khan</div><div class="floating-person person-three"><b>RB</b>Riley Brooks</div></div></section>` : "";
+      const openRoles = employerRoles.filter((role) => (state.roleStatuses[role.title] || role.status) === "Accepting applicants").length;
+      const reviewedCount = Object.values(state.candidateStages).filter((stage) => stage !== "New").length;
+      const pipeline = `<div class="pipeline-grid"><div class="pipeline-card" style="--dot:#5549e8"><div class="pipeline-value">${openRoles}</div><div class="pipeline-label">Roles open</div><div class="pipeline-note">Accepting applicants</div></div><div class="pipeline-card" style="--dot:#f1ad60"><div class="pipeline-value">${Math.max(0, 51 - reviewedCount)}</div><div class="pipeline-label">Applicants to review</div><div class="pipeline-note">${reviewedCount} reviewed in this demo</div></div><div class="pipeline-card" style="--dot:#63a77d"><div class="pipeline-value">${Object.values(state.candidateStages).filter((stage) => stage === "Shortlisted").length}</div><div class="pipeline-label">In conversation</div><div class="pipeline-note">Candidates shortlisted</div></div><div class="pipeline-card" style="--dot:#e28080"><div class="pipeline-value">4</div><div class="pipeline-label">Interviews this week</div><div class="pipeline-note">Your calendar is looking good</div></div></div>`;
+      const roles = state.view === "Candidates" ? "" : `<section class="roles-panel"><div class="section-head"><h2>Open roles</h2><button class="text-button" type="button" data-view="Open roles">Manage roles <i class="bi bi-arrow-right" aria-hidden="true"></i></button></div><div class="role-list">${employerRoles.map((role, index) => { const status = state.roleStatuses[role.title] || role.status; return `<div class="role-row"><div><div class="role-name">${escapeHtml(role.title)}</div><div class="role-type">${escapeHtml(role.type)}</div></div><span class="role-status">${escapeHtml(status)}</span><div class="role-applicants"><strong>${role.applicants}</strong> applicants</div><button class="role-open" type="button" data-role-index="${index}">${status === "Accepting applicants" ? "Pause" : "Reopen"}</button></div>`; }).join("")}</div></section>`;
+      const candidateList = candidateDirectory();
+      const candidates = `<section class="roles-panel"><div class="section-head"><h2>Recent candidates</h2><button class="text-button" type="button" data-view="Candidates">View all <i class="bi bi-arrow-right" aria-hidden="true"></i></button></div><div class="applicant-list">${candidateList.slice(0, 3).map((person, index) => candidateRow(person, false, index < 2)).join("")}</div><div style="margin-top:16px"><button type="button" class="button-secondary" id="all-candidates" style="width:100%">Review candidates</button></div></section>`;
+      const filteredCandidates = candidateList.filter(candidateMatches);
+      const candidatePage = state.view === "Candidates" ? `<section class="roles-panel"><div class="section-head"><h2>Recently added</h2><select class="filter-button" id="candidate-filter" aria-label="Filter candidates by role"><option>All roles</option>${[...new Set(candidateList.map((person) => person.role))].map((role) => `<option ${state.candidateRoleFilter === role ? "selected" : ""}>${escapeHtml(role)}</option>`).join("")}</select></div><label class="search-box" style="margin-bottom:8px"><i class="bi bi-search" aria-hidden="true"></i><input id="candidate-search" type="search" placeholder="Search candidates" value="${escapeHtml(state.candidateQuery)}" aria-label="Search candidates" /></label><div class="applicant-list" id="candidate-results">${filteredCandidates.length ? filteredCandidates.map((person) => candidateRow(person, true)).join("") : `<div class="activity-empty">No candidates match those filters.</div>`}</div></section>` : "";
+      return `${heading}${hero}${pipeline}<div class="employer-grid">${roles}${state.view === "Candidates" ? candidatePage : candidates}</div>`;
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+    }
+
+    function render() {
+      document.querySelectorAll("[data-role]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.role === state.role)));
+      if (!navForRole().includes(state.view)) state.view = "Overview";
+      renderNav();
+      document.getElementById("breadcrumb").textContent = state.view;
+      const profileName = state.role === "candidate" ? state.profile.name : "Taylor Reed";
+      document.getElementById("sidebar-name").textContent = profileName;
+      document.getElementById("sidebar-role").textContent = state.role === "candidate" ? state.profile.title : "People & culture";
+      document.getElementById("sidebar-avatar").textContent = profileName.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+      document.getElementById("content").innerHTML = state.role === "candidate" ? renderCandidate() : renderEmployer();
+    }
+
+    let toastTimer;
+    let modalReturnFocus = null;
+    function toast(message) {
+      const element = document.getElementById("toast");
+      document.getElementById("toast-message").textContent = message;
+      element.classList.add("visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => element.classList.remove("visible"), 2600);
+    }
+
+    function closeModal() {
+      const backdrop = document.getElementById("modal-backdrop");
+      backdrop.hidden = true;
+      document.getElementById("modal").innerHTML = "";
+      if (modalReturnFocus && modalReturnFocus.isConnected) modalReturnFocus.focus();
+      modalReturnFocus = null;
+    }
+
+    function openModal() {
+      modalReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      document.getElementById("modal-backdrop").hidden = false;
+    }
+
+    function showJobDetails(id) {
+      const job = allJobs().find((item) => item.id === Number(id));
+      if (!job) return;
+      document.getElementById("modal").innerHTML = `<div class="modal-header"><div><p class="eyebrow">${escapeHtml(job.company)} · ${escapeHtml(job.posted)}</p><h2 id="modal-title">${escapeHtml(job.title)}</h2></div><button class="modal-close" type="button" data-close-modal aria-label="Close details"><i class="bi bi-x-lg" aria-hidden="true"></i></button></div><div class="job-detail-meta"><span class="tag">${escapeHtml(job.location)}</span><span class="tag remote">${escapeHtml(job.arrangement)}</span><span class="tag">${escapeHtml(job.salary)}</span></div><p class="modal-description">${escapeHtml(job.description)}</p><div class="detail-block"><h3>What you’ll bring</h3><div class="tag-row">${job.skills.map((skill) => `<span class="tag">${escapeHtml(skill)}</span>`).join("")}</div></div><div class="detail-block"><h3>About the role</h3><p>Work with a kind, curious team that values craft and clear communication. The right person is thoughtful about the details and excited to make a meaningful difference.</p></div><div class="modal-footer"><button class="button-secondary" type="button" data-close-modal>Close</button><button class="button-primary" type="button" data-modal-apply="${job.id}" ${state.applied.has(job.id) ? "disabled" : ""}>${state.applied.has(job.id) ? "Already applied" : "Apply for this role"}</button></div>`;
+      openModal();
+      document.querySelector("#modal [data-close-modal]").focus();
+    }
+
+    function showApplicationForm(id) {
+      const job = allJobs().find((item) => item.id === Number(id));
+      if (!job || state.applied.has(job.id)) return;
+      document.getElementById("modal").innerHTML = `<form id="application-form" data-job-id="${job.id}"><div class="modal-header"><div><p class="eyebrow">APPLICATION · ${escapeHtml(job.company)}</p><h2 id="modal-title">Apply for ${escapeHtml(job.title)}</h2></div><button class="modal-close" type="button" data-close-modal aria-label="Close application"><i class="bi bi-x-lg" aria-hidden="true"></i></button></div><p class="modal-description">Introduce yourself and tell the team what interested you about the role.</p><div class="form-grid"><div class="field"><label for="applicant-name">Your name</label><input id="applicant-name" name="name" required value="${escapeHtml(state.profile.name)}" /></div><div class="field"><label for="applicant-email">Email address</label><input id="applicant-email" name="email" type="email" required placeholder="you@example.com" /></div><div class="field full"><label for="cover-letter">Note to the team</label><textarea id="cover-letter" name="note" required placeholder="What makes this role interesting to you?"></textarea></div></div><div class="modal-footer"><button class="button-secondary" type="button" data-close-modal>Cancel</button><button class="button-primary" type="submit"><i class="bi bi-send" aria-hidden="true"></i> Send application</button></div></form>`;
+      openModal();
+      document.getElementById("applicant-name").focus();
+    }
+
+    function showPostForm() {
+      document.getElementById("modal").innerHTML = `<form id="post-form"><div class="modal-header"><div><p class="eyebrow">GROW YOUR TEAM</p><h2 id="modal-title">Post a new role</h2></div><button class="modal-close" type="button" data-close-modal aria-label="Close form"><i class="bi bi-x-lg" aria-hidden="true"></i></button></div><p class="modal-description">A clear, thoughtful description helps the right people picture themselves here.</p><div class="form-grid"><div class="field full"><label for="post-title">Role title</label><input id="post-title" name="title" required placeholder="e.g. Senior Product Designer" /></div><div class="field"><label for="post-company">Company</label><input id="post-company" name="company" required placeholder="Your company" /></div><div class="field"><label for="post-category">Specialty</label><select id="post-category" name="category"><option>Design</option><option>Engineering</option><option>Marketing</option><option>People</option><option>Customer</option></select></div><div class="field"><label for="post-location">Location</label><input id="post-location" name="location" required placeholder="City or Remote, US" /></div><div class="field"><label for="post-salary">Salary range</label><input id="post-salary" name="salary" placeholder="e.g. $120k – $150k" /></div><div class="field full"><label for="post-description">About the role</label><textarea id="post-description" name="description" required placeholder="What will this person work on?"></textarea></div></div><div class="modal-footer"><button class="button-secondary" type="button" data-close-modal>Cancel</button><button class="button-primary" type="submit"><i class="bi bi-send" aria-hidden="true"></i> Publish role</button></div></form>`;
+      openModal();
+      document.getElementById("post-title").focus();
+    }
+
+    function showProfileForm() {
+      document.getElementById("modal").innerHTML = `<form id="profile-form"><div class="modal-header"><div><p class="eyebrow">YOUR PROFILE</p><h2 id="modal-title">A little about you</h2></div><button class="modal-close" type="button" data-close-modal aria-label="Close profile"><i class="bi bi-x-lg" aria-hidden="true"></i></button></div><p class="modal-description">Help teams understand who you are and what kind of work you do.</p><div class="form-grid"><div class="field full"><label for="profile-name">Your name</label><input id="profile-name" name="name" required value="${escapeHtml(state.profile.name)}" /></div><div class="field full"><label for="profile-title">Your role or specialty</label><input id="profile-title" name="title" required value="${escapeHtml(state.profile.title)}" /></div></div><div class="modal-footer"><button class="button-secondary" type="button" data-close-modal>Cancel</button><button class="button-primary" type="submit">Save profile</button></div></form>`;
+      openModal();
+      document.getElementById("profile-name").focus();
+    }
+
+    function showCandidateReview(name) {
+      const person = [...applicants, { initials: "AT", name: "Avery Thomas", role: "Customer Success Lead", color: "#d8e9dc" }, { initials: "MP", name: "Morgan Patel", role: "People Operations Partner", color: "#ded9f2" }].find((item) => item.name === name);
+      if (!person) return;
+      const stage = state.candidateStages[name] || "New";
+      document.getElementById("modal").innerHTML = `<div class="modal-header"><div><p class="eyebrow">CANDIDATE PROFILE · ${escapeHtml(stage)}</p><h2 id="modal-title">${escapeHtml(person.name)}</h2></div><button class="modal-close" type="button" data-close-modal aria-label="Close candidate profile"><i class="bi bi-x-lg" aria-hidden="true"></i></button></div><p class="modal-description">${escapeHtml(person.role)} · Applied today</p><div class="detail-block"><h3>About</h3><p>A thoughtful candidate with a strong interest in collaborative teams and meaningful work. Their experience could be a good match for your open ${escapeHtml(person.role.toLowerCase())} role.</p></div><div class="modal-footer"><button class="button-secondary" type="button" data-candidate-stage="${escapeHtml(name)}" data-stage="Not moving forward">Pass</button><button class="button-primary" type="button" data-candidate-stage="${escapeHtml(name)}" data-stage="Shortlisted"><i class="bi bi-check2" aria-hidden="true"></i> Shortlist</button></div>`;
+      openModal();
+      document.querySelector("#modal [data-close-modal]").focus();
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+      const roleButton = target.closest("[data-role]");
+      if (roleButton) {
+        state.role = roleButton.dataset.role;
+        state.view = "Overview";
+        state.filter = "All roles";
+        render();
+        return;
+      }
+      const viewButton = target.closest("[data-view]");
+      if (viewButton) {
+        state.view = viewButton.dataset.view;
+        render();
+        return;
+      }
+      const filterButton = target.closest("[data-filter]");
+      if (filterButton) {
+        state.filter = filterButton.dataset.filter;
+        render();
+        return;
+      }
+      const saveButton = target.closest("[data-save]");
+      if (saveButton) {
+        const id = Number(saveButton.dataset.save);
+        if (state.saved.has(id)) { state.saved.delete(id); toast("Removed from saved roles."); }
+        else { state.saved.add(id); toast("Role saved for later."); }
+        persistState();
+        render();
+        return;
+      }
+      const applyButton = target.closest("[data-apply], [data-modal-apply]");
+      if (applyButton) {
+        const id = Number(applyButton.dataset.apply || applyButton.dataset.modalApply);
+        if (state.applied.has(id)) { toast("You’ve already applied to this role."); return; }
+        showApplicationForm(id);
+        return;
+      }
+      const detailButton = target.closest("[data-detail]");
+      if (detailButton) { showJobDetails(detailButton.dataset.detail); return; }
+      if (target.closest("#post-job, #hero-post")) { showPostForm(); return; }
+      if (target.closest("[data-close-modal]")) { closeModal(); return; }
+      if (target.id === "modal-backdrop") { closeModal(); return; }
+      if (target.closest("#profile-button")) { showProfileForm(); return; }
+      if (target.closest("#tip-button")) { toast("Lead with what drew you to this team."); return; }
+      if (target.closest("#help-button")) { toast("Help desk: hello@goodwork.example"); return; }
+      if (target.closest("#notification-button")) { toast("You’re all caught up."); return; }
+      if (target.closest("#search-filter")) {
+        state.filter = state.filter === "Remote" ? "All roles" : "Remote";
+        render();
+        return;
+      }
+      if (target.closest("#all-candidates")) { state.view = "Candidates"; render(); return; }
+      const candidateButton = target.closest("[data-candidate]");
+      if (candidateButton) { showCandidateReview(candidateButton.dataset.candidate); return; }
+      const stageButton = target.closest("[data-candidate-stage]");
+      if (stageButton) {
+        const name = stageButton.dataset.candidateStage;
+        state.candidateStages[name] = stageButton.dataset.stage;
+        persistState();
+        closeModal();
+        render();
+        toast(`${name} marked ${stageButton.dataset.stage.toLowerCase()}.`);
+        return;
+      }
+      const roleViewButton = target.closest("[data-role-index]");
+      if (roleViewButton) {
+        const role = employerRoles[Number(roleViewButton.dataset.roleIndex)];
+        if (role) {
+          const current = state.roleStatuses[role.title] || role.status;
+          state.roleStatuses[role.title] = current === "Accepting applicants" ? "Paused" : "Accepting applicants";
+          persistState();
+          render();
+          toast(`${role.title} is ${state.roleStatuses[role.title].toLowerCase()}.`);
+        }
+      }
+    });
+
+    document.addEventListener("input", (event) => {
+      if (event.target.id === "job-search") {
+        const input = event.target;
+        state.query = input.value;
+        const list = candidateJobs(state.view);
+        const target = document.getElementById("job-results");
+        if (target) target.innerHTML = list.length ? `<div class="job-list">${list.map(jobCard).join("")}</div>` : `<div class="empty-state"><i class="bi bi-search" aria-hidden="true"></i><h3>No roles found</h3><p>Try a different search or explore another specialty.</p><button class="button-secondary" type="button" data-view="Find jobs">Browse roles</button></div>`;
+      }
+      if (event.target.id === "candidate-search") {
+        state.candidateQuery = event.target.value;
+        const target = document.getElementById("candidate-results");
+        const filtered = candidateDirectory().filter(candidateMatches);
+        if (target) target.innerHTML = filtered.length ? filtered.map((person) => candidateRow(person, true)).join("") : `<div class="activity-empty">No candidates match those filters.</div>`;
+      }
+    });
+
+    document.addEventListener("change", (event) => {
+      if (event.target.id === "candidate-filter") {
+        state.candidateRoleFilter = event.target.value;
+        const target = document.getElementById("candidate-results");
+        const filtered = candidateDirectory().filter(candidateMatches);
+        if (target) target.innerHTML = filtered.length ? filtered.map((person) => candidateRow(person, true)).join("") : `<div class="activity-empty">No candidates match those filters.</div>`;
+      }
+    });
+
+    document.addEventListener("submit", (event) => {
+      if (event.target.id === "application-form") {
+        event.preventDefault();
+        const jobId = Number(event.target.dataset.jobId);
+        const job = allJobs().find((item) => item.id === jobId);
+        if (!job || state.applied.has(jobId)) return;
+        const form = new FormData(event.target);
+        const name = String(form.get("name")).trim();
+        const email = String(form.get("email")).trim();
+        const note = String(form.get("note")).trim();
+        if (!name || !email || !note) return;
+        state.applied.add(jobId);
+        state.applications[jobId] = { name, email, note, status: "Under review", submittedAt: new Date().toISOString() };
+        persistState();
+        closeModal();
+        render();
+        toast(`Application sent to ${job.company}. Good luck, ${name.split(/\s+/)[0]}!`);
+        return;
+      }
+      if (event.target.id === "profile-form") {
+        event.preventDefault();
+        const form = new FormData(event.target);
+        const name = String(form.get("name")).trim();
+        const title = String(form.get("title")).trim();
+        if (!name || !title) return;
+        state.profile = { name, title };
+        persistState();
+        closeModal();
+        render();
+        toast("Profile updated.");
+        return;
+      }
+      if (event.target.id !== "post-form") return;
+      event.preventDefault();
+      const form = new FormData(event.target);
+      const company = String(form.get("company")).trim();
+      const title = String(form.get("title")).trim();
+      const location = String(form.get("location")).trim();
+      const category = String(form.get("category"));
+      const description = String(form.get("description")).trim();
+      const salary = String(form.get("salary")).trim() || "Salary not listed";
+      if (!company || !title || !location || !description) return;
+      state.customJobs.unshift({ id: Date.now(), company, title, location, category, description, salary, arrangement: /remote/i.test(location) ? "Remote" : "On-site", posted: "Just now", mark: company.charAt(0).toUpperCase(), color: "#5549e8", bg: "#eeedff", skills: [category, "Full time"] });
+      employerRoles.unshift({ title, type: `${category} · Full time`, applicants: 0, status: "Accepting applicants" });
+      persistState();
+      closeModal();
+      state.role = "employer";
+      state.view = "Open roles";
+      render();
+      toast("Role published. It’s ready for applicants.");
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !document.getElementById("modal-backdrop").hidden) closeModal();
+    });
+
+    render();
+  </script>
+</body>
+</html>
